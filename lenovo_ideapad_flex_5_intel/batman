@@ -1,0 +1,45 @@
+#!/bin/bash
+if [[ "$1" == "charge" ]]; then
+    if [[ "$2" == "rapid" ]]; then
+	printf "rapid charge engage\n"
+	echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07' | tee /proc/acpi/call	
+    elif [[ "$2" == "slow" ]]; then
+	printf "slow charge engage\n"
+	echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x08' | tee /proc/acpi/call
+    else
+	printf "please specify charging mode - rapid or slow\n"
+    fi
+elif [[ "$1" == "conserve" ]]; then
+    if [[ "$2" == "on" ]]; then
+	printf "battery conservation engage\n"
+
+	echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode	
+	#echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' | tee /proc/acpi/call		
+    elif [[ "$2" == "off" ]]; then
+	printf "battery conservation off\n"
+	echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode	
+	#echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x05' | tee /proc/acpi/call
+    else
+	printf "please specify battery conservation mode - on of off\n"
+    fi
+elif [[ "$1" == "status" ]]; then
+    if [[ "$2" == "check" ]]; then
+	cat /sys/class/power_supply/BAT0/status
+    elif [[ "$2" == "draw" ]]; then
+	cur1=$(cat /sys/class/power_supply/BAT0/power_now)
+	cur2=$(awk -v awkcur=$cur1 'BEGIN{print awkcur/1000000}')
+	echo "$cur2"
+    else
+	printf "please specifiy battery status option"
+    fi   
+elif [[ "$1" == "performance" ]]; then
+    if [[ "$2" == "check" ]]; then
+	cat /sys/firmware/acpi/platform_profile
+    else
+	printf "please specifiy performance option"
+    fi   
+else
+    echo "BAT: $(cat /sys/class/power_supply/BAT0/capacity)% -- TIME: $(date)"
+    printf "\n"
+    printf "Please specify one of: \n\ncharge - rapid || slow, \nconserve - on || off \nstatus - check || draw\n"
+fi

@@ -1,2 +1,4 @@
 # batman
-Little battery management scripts for various laptops
+
+A collection of battery management shell scripts for various laptops.
+
