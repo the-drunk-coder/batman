@@ -1,0 +1,30 @@
+#!/bin/bash
+if [[ "$1" == "status" ]]; then
+    if [[ "$2" == "check" ]]; then
+	cat /sys/class/power_supply/BAT0/status
+    elif [[ "$2" == "draw" ]]; then
+	cur1=$(cat /sys/class/power_supply/BAT0/power_now)
+	cur2=$(awk -v awkcur=$cur1 'BEGIN{print awkcur/1000000}')
+	echo "$cur2"
+    else
+	printf "please specifiy battery status option - check or draw\n"
+    fi   
+elif [[ "$1" == "conserve" ]]; then
+    if [[ "$2" == "on" ]]; then
+	echo 70 >> /sys/class/power_supply/BAT0/charge_stop_threshold
+    elif [[ "$2" == "off" ]]; then
+	    echo 100 >> /sys/class/power_supply/BAT0/charge_stop_threshold
+    else
+	printf "please specifiy conserve option - on or off\n"
+    fi   
+elif [[ "$1" == "performance" ]]; then
+    if [[ "$2" == "check" ]]; then
+	cat /sys/firmware/acpi/platform_profile
+    else
+	printf "please specifiy performance option\n"
+    fi   
+else
+    echo "BAT: $(cat /sys/class/power_supply/BAT0/capacity)% -- TIME: $(date)"
+    printf "\n"
+    printf "Please specify one of: \n\nstatus - check || draw\nperformance - check\nconserve - on || off\n"
+fi

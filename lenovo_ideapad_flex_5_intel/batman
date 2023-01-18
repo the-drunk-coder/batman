@@ -30,7 +30,7 @@ elif [[ "$1" == "status" ]]; then
 	cur2=$(awk -v awkcur=$cur1 'BEGIN{print awkcur/1000000}')
 	echo "$cur2"
     else
-	printf "please specifiy battery status option"
+	printf "please specifiy battery status option\n"
     fi   
 elif [[ "$1" == "performance" ]]; then
     if [[ "$2" == "check" ]]; then
