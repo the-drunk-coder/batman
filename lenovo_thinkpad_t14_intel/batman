@@ -11,9 +11,11 @@ if [[ "$1" == "status" ]]; then
     fi   
 elif [[ "$1" == "conserve" ]]; then
     if [[ "$2" == "on" ]]; then
-	echo 70 >> /sys/class/power_supply/BAT0/charge_stop_threshold
+	echo 75 >> /sys/class/power_supply/BAT0/charge_stop_threshold
+	echo 40 >> /sys/class/power_supply/BAT0/charge_start_threshold
     elif [[ "$2" == "off" ]]; then
-	    echo 100 >> /sys/class/power_supply/BAT0/charge_stop_threshold
+	echo 100 >> /sys/class/power_supply/BAT0/charge_stop_threshold
+	echo 100 >> /sys/class/power_supply/BAT0/charge_start_threshold
     else
 	printf "please specifiy conserve option - on or off\n"
     fi   
